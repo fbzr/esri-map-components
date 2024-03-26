@@ -6,7 +6,6 @@ import {
 } from "@arcgis/map-components-react";
 import mapController from "../../controllers/MapController";
 import "./Map.scss";
-import Chart from "../Chart/Chart";
 
 const Map = () => {
   const mapRef: RefObject<HTMLArcgisMapElement> | null = React.useRef(null);
