@@ -14,8 +14,10 @@
     "@arcgis/core": "~4.29.6",
     "@arcgis/map-components-react": "~4.29.6",
     "@esri/calcite-components": "2.4.0",
+    "@reduxjs/toolkit": "^2.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^9.1.0",
     "sass": "^1.72.0"
   },
   "devDependencies": {

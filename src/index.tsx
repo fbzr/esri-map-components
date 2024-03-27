@@ -1,6 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
 import Map from "./components/Map/Map";
+import store from "./store";
+
 // import defineCustomElements to register custom elements with the custom elements registry
 import { defineCustomElements } from "@arcgis/map-components/dist/loader";
 import { defineCustomElements as defineCalciteElements } from "@esri/calcite-components/dist/loader";
@@ -25,6 +28,8 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <Map />
+    <Provider store={store}>
+      <Map />
+    </Provider>
   </React.StrictMode>,
 );
