@@ -3,11 +3,14 @@ import {
   ArcgisMap,
   ArcgisSearch,
   ArcgisLegend,
+  ArcgisExpand,
+  ArcgisPlacement,
 } from "@arcgis/map-components-react";
-import mapController from "../../controllers/MapController";
+import { mapController } from "../../controllers/MapController";
 import "./Map.scss";
 
 const Map = () => {
+  const [isMapLoaded, setIsMapLoaded] = React.useState(false);
   const mapRef: RefObject<HTMLArcgisMapElement> | null = React.useRef(null);
 
   return (
@@ -15,8 +18,9 @@ const Map = () => {
       ref={mapRef}
       basemap={"topo"}
       extent={mapController.initialExtent}
-      onArcgisViewReadyChange={() => {
-        mapController.initMap(mapRef.current!);
+        onArcgisViewReadyChange={async () => {
+          await mapController.initMap(mapRef.current!);
+          setIsMapLoaded(true);
       }}
       onArcgisViewClick={mapController.handleClick}
     >

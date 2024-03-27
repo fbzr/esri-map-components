@@ -3,19 +3,21 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 class MapController {
   #map: __esri.Map | null = null;
+  #mapView: __esri.MapView | null = null;
   #featureLayer: __esri.FeatureLayer | null = null;
 
   #initialExtent = new Extent({
-    xmin: -8591349.995937862,
-    ymin: 4680000,
-    xmax: -8560851.621652117,
-    ymax: 4721753.174946784,
+    xmin: -87.9401,
+    ymin: 41.6445,
+    xmax: -87.5246,
+    ymax: 42.023,
     spatialReference: {
-      wkid: 102100,
+      wkid: 4326,
     },
   });
 
-  initMap = (mapElement: HTMLArcgisMapElement) => {
+  initMap = async (mapElement: HTMLArcgisMapElement) => {
+    this.#mapView = mapElement.view;
     this.#map = mapElement.map;
 
     console.log("MapController.initMap", this.#map);
@@ -24,17 +26,22 @@ class MapController {
     }
 
     this.#featureLayer = new FeatureLayer({
-      url: "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCOZ/Zone_Mapservice/MapServer/21",
+      url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/ChicagoCr/FeatureServer/0",
       minScale: 0,
       maxScale: 0,
+      outFields: ["*"],
       popupEnabled: true,
       popupTemplate: {
-        title: "Zone",
-        content: "Zone: {District}",
+        title: "Crime",
+        content: "Type: {Primary_Ty}",
       },
     });
 
     this.#map.add(this.#featureLayer);
+
+    await this.#mapView.when();
+
+    return this.#mapView;
   };
 
   handleClick = (event: any) => {
@@ -43,6 +50,10 @@ class MapController {
 
   get map() {
     return this.#map;
+  }
+
+  get mapView() {
+    return this.#mapView;
   }
 
   get initialExtent() {
@@ -54,6 +65,14 @@ class MapController {
   }
 }
 
-const mapController = new MapController();
+export const mapController = new MapController();
 
-export default mapController;
+declare global {
+  interface Window {
+    mapController: typeof mapController;
+  }
+}
+
+if (import.meta.env.MODE === "development") {
+  window.mapController = mapController;
+}
