@@ -1,4 +1,5 @@
 import React, { RefObject } from "react";
+import { useDispatch } from "react-redux";
 import {
   ArcgisMap,
   ArcgisSearch,
@@ -8,11 +9,11 @@ import {
 } from "@arcgis/map-components-react";
 import { mapController } from "../../controllers/MapController";
 import Chart from "../Chart/Chart";
-
+import { setIsMapInitialized } from "../../store/slices/mapSlice";
 import "./Map.scss";
 
 const Map = () => {
-  const [isMapLoaded, setIsMapLoaded] = React.useState(false);
+  const dispatch = useDispatch();
   const mapRef: RefObject<HTMLArcgisMapElement> | null = React.useRef(null);
 
   return (
@@ -22,20 +23,18 @@ const Map = () => {
       extent={mapController.initialExtent}
       onArcgisViewReadyChange={async () => {
         await mapController.initMap(mapRef.current!);
-        setIsMapLoaded(true);
+        dispatch(setIsMapInitialized(true));
       }}
       onArcgisViewClick={mapController.handleClick}
     >
       <ArcgisSearch position="top-right"></ArcgisSearch>
       <ArcgisLegend position="bottom-left"></ArcgisLegend>
 
-      {isMapLoaded && (
-        <ArcgisExpand position="top-left" mode="floating" className="expand">
-          <ArcgisPlacement position="top-left">
-            <Chart />
-          </ArcgisPlacement>
-        </ArcgisExpand>
-      )}
+      <ArcgisExpand position="top-left" mode="floating" className="expand">
+        <ArcgisPlacement position="top-left">
+          <Chart />
+        </ArcgisPlacement>
+      </ArcgisExpand>
     </ArcgisMap>
   );
 };

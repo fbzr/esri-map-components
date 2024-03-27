@@ -1,4 +1,6 @@
 import { RefObject, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
+import { isMapInitializedState } from "../../store/slices/mapSlice";
 import {
   ArcgisChartsActionBar,
   ArcgisChartsBarChart,
@@ -9,14 +11,19 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import "./Chart.scss";
 
 const Chart = () => {
+  const isInitialized = useSelector(isMapInitializedState);
   const chartRef: RefObject<HTMLArcgisChartsBarChartElement> | null =
     useRef(null);
 
   useEffect(() => {
-    if (chartRef.current) {
+    if (chartRef.current && isInitialized) {
       initChart();
     }
-  }, [chartRef]);
+  }, [chartRef, isInitialized]);
+
+  if (!isInitialized) {
+    return null;
+  }
 
   const initChart = async () => {
     console.log("log.mapController.map", mapController.map);
@@ -28,7 +35,6 @@ const Chart = () => {
       outFields: ["*"],
     });
 
-    console.log("Chart.initChart", layer);
     if (layer) {
       await layer.load();
 
